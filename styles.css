@@ -1687,3 +1687,13 @@ footer span {
     transition-duration: .01ms !important
   }
 }
+/* Project 6: readable charity: water footer links */
+footer a,
+footer a:link,
+footer a:visited,
+footer a:hover,
+footer a:active {
+  color: #FFC907 !important;
+  text-decoration: underline !important;
+  font-weight: 700;
+}
