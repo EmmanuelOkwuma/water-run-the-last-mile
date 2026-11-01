@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#102d36">
+  <title>Water Run — The Last Mile</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div class="game-shell">
+    <header class="topbar">
+      <div class="logo-area">
+        <div class="logo-symbol">W<span>.</span></div>
+        <div>
+          <h1>WATER RUN</h1><span>THE LAST MILE</span>
+        </div>
+      </div>
+      <div class="topbar-right"><span class="charity-label">A GAME INSPIRED BY <strong>charity:
+            water</strong></span><button id="reset-btn" class="reset-button">RESTART LEVEL</button></div>
+    </header>
+    <section class="level-strip">
+      <div><span class="eyebrow">CURRENT MISSION</span><strong id="level-name"></strong></div><span
+        id="level-objective"></span><button id="levels-btn">ALL LEVELS</button>
+    </section>
+    <section class="game-stats">
+      <div class="stat"><span>AVAILABLE FUNDS</span><strong id="budget"></strong><small id="reserve-warning">Repair
+          reserve: $75</small></div>
+      <div class="stat"><span>PEOPLE WITH WATER</span><strong id="served"></strong></div>
+      <div class="stat"><span>TIME REMAINING</span><strong id="timer"></strong></div>
+      <div class="stat"><span>WATER SYSTEM</span><strong id="system-status"></strong></div>
+    </section>
+    <main id="game-world" class="game-world">
+      <div class="sky"></div>
+      <div class="sun"></div>
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="mountain mountain-1"></div>
+      <div class="mountain mountain-2"></div>
+      <div class="mountain mountain-3"></div>
+      <div class="hill hill-1"></div>
+      <div class="hill hill-2"></div>
+      <div class="ground"></div>
+      <div class="road road-main"></div>
+      <div class="road road-cross"></div>
+      <div id="river" class="river">
+        <div class="river-sheen"></div>
+        <div class="river-ripples"></div>
+      </div>
+      <div class="river-sign"><span>WATER SOURCE</span><strong>THE RIVER</strong></div><svg id="pipe-network"
+        class="pipe-network" aria-hidden="true"></svg>
+      <div class="tree tree-1"></div>
+      <div class="tree tree-2"></div>
+      <div class="tree tree-3"></div>
+      <div class="tree tree-4"></div>
+      <div class="tree tree-5"></div>
+      <div class="tree tree-6"></div>
+      <div class="village-label"><span>WELCOME TO</span><strong>THE VILLAGE</strong><small id="village-pop"></small>
+      </div>
+      <button class="house house-1" data-house="0" aria-label="Construction site 1"><span
+          class="house-roof"></span><span class="house-body"><span class="house-window"></span><span
+            class="house-door"></span></span><span class="house-name">SITE 1</span><span
+          class="house-marker">+</span><span class="house-water-icon">WATER CONNECTED</span><span
+          class="structure-slot"></span></button>
+      <button class="house house-2" data-house="1" aria-label="Construction site 2"><span
+          class="house-roof"></span><span class="house-body"><span class="house-window"></span><span
+            class="house-door"></span></span><span class="house-name">SITE 2</span><span
+          class="house-marker">+</span><span class="house-water-icon">WATER CONNECTED</span><span
+          class="structure-slot"></span></button>
+      <button class="house house-3" data-house="2" aria-label="Construction site 3"><span
+          class="house-roof"></span><span class="house-body"><span class="house-window"></span><span
+            class="house-door"></span></span><span class="house-name">SITE 3</span><span
+          class="house-marker">+</span><span class="house-water-icon">WATER CONNECTED</span><span
+          class="structure-slot"></span></button>
+      <button class="house house-4" data-house="3" aria-label="Construction site 4"><span
+          class="house-roof"></span><span class="house-body"><span class="house-window"></span><span
+            class="house-door"></span></span><span class="house-name">SITE 4</span><span
+          class="house-marker">+</span><span class="house-water-icon">WATER CONNECTED</span><span
+          class="structure-slot"></span></button>
+      <button class="house house-5" data-house="4" aria-label="Construction site 5"><span
+          class="house-roof"></span><span class="house-body"><span class="house-window"></span><span
+            class="house-door"></span></span><span class="house-name">SITE 5</span><span
+          class="house-marker">+</span><span class="house-water-icon">WATER CONNECTED</span><span
+          class="structure-slot"></span></button>
+      <aside class="access-hud"><span class="hud-kicker">CLEAN WATER ACCESS</span>
+        <div id="access-ring" class="access-ring" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+          aria-valuenow="0">
+          <div class="ring-center"><strong id="progress-percent">0%</strong><span id="progress-count">0 / 150</span>
+          </div>
+        </div><span id="progress-description" class="access-caption">Build the river network</span>
+      </aside>
+      <aside id="objectives-panel" class="hud-panel objectives-panel">
+        <div class="hud-panel-heading"><strong>MISSION OBJECTIVES</strong><button id="objectives-toggle"
+            aria-expanded="true">−</button></div>
+        <div class="hud-panel-body">
+          <div id="milestones" class="milestones"></div>
+          <div id="stability" class="stability"></div>
+        </div>
+      </aside>
+      <aside id="events-panel" class="hud-panel events-panel">
+        <div class="hud-panel-heading"><strong>LIVE EVENTS</strong>
+          <div class="event-controls"><button id="history-btn">HISTORY</button><button id="events-toggle"
+              aria-expanded="true">−</button></div>
+        </div>
+        <div class="hud-panel-body">
+          <div id="recent-events" class="recent-events"></div>
+        </div>
+      </aside>
+      <div id="guide-toast" class="guide-toast"><strong id="guide-title">MISSION READY</strong><span
+          id="guide-text"></span></div>
+      <div id="construction-menu" class="construction-menu hidden" role="dialog">
+        <div class="menu-header">
+          <div><span class="eyebrow">CONSTRUCTION SITE</span>
+            <h2 id="selected-house-title"></h2>
+          </div><button id="close-menu">×</button>
+        </div>
+        <p class="menu-description">Choose infrastructure for this site.</p>
+        <div id="construction-options" class="construction-options"></div>
+        <div class="menu-footer"><span>AVAILABLE FUNDS</span><strong id="menu-budget"></strong></div>
+      </div>
+      <div id="contamination-alert" class="contamination-alert hidden" role="alertdialog">
+        <div class="alert-head"><span class="alert-icon">!</span>
+          <div><strong id="alert-title">WATER EMERGENCY</strong>
+            <p id="contamination-text"></p>
+          </div>
+        </div>
+        <div class="alert-actions"><button id="fix-contamination">REPAIR — $75</button><button id="safe-shutdown">SAFE
+            SHUTDOWN — 8s</button></div>
+        <div class="contamination-timer">
+          <div id="contamination-progress"></div>
+        </div>
+      </div>
+      <div id="floating-notifications"></div>
+      <div id="history-overlay" class="screen-overlay hidden">
+        <div class="history-card">
+          <div class="history-heading">
+            <h2>MISSION HISTORY</h2><button id="close-history">×</button>
+          </div>
+          <div id="mission-log" class="mission-log"></div>
+        </div>
+      </div>
+      <div id="start-screen" class="screen-overlay">
+        <div class="screen-card">
+          <div class="screen-tag">A CHARITY: WATER INSPIRED GAME</div>
+          <h2>WATER RUN</h2>
+          <h3>THE LAST MILE</h3>
+          <p class="screen-intro">Build a working clean-water system. Choose your sites, connect the river, and keep the
+            village supplied.</p>
+          <h4 id="selection-title">SELECT A MISSION</h4>
+          <p id="level-story"></p>
+          <div id="level-cards" class="level-cards"></div>
+          <div id="start-action">
+            <section class="mission-briefing">
+              <div class="briefing-heading"><span class="eyebrow">BEFORE YOU BEGIN</span>
+                <h4>YOUR MISSION BRIEFING</h4>
+              </div>
+              <p id="briefing-intro"></p>
+              <div class="briefing-stats">
+                <div><span>POPULATION TARGET</span><strong id="briefing-target"></strong></div>
+                <div><span>STARTING BUDGET</span><strong id="briefing-budget"></strong></div>
+                <div><span>TIME LIMIT</span><strong id="briefing-time"></strong></div>
+              </div>
+              <h5>HOW TO COMPLETE THIS MISSION</h5>
+              <ol id="briefing-steps"></ol>
+              <div class="briefing-rule"><strong>IMPORTANT RULE</strong>
+                <p id="briefing-warning"></p>
+              </div>
+              <h5>AVAILABLE INFRASTRUCTURE</h5>
+              <div id="briefing-buildings"></div>
+              <p class="briefing-win" id="briefing-win"></p>
+            </section><button id="start-btn" class="main-button">I UNDERSTAND — BEGIN MISSION →</button>
+          </div>
+        </div>
+      </div>
+      <div id="end-screen" class="screen-overlay hidden">
+        <div class="screen-card">
+          <div id="end-badge" class="screen-tag">MISSION COMPLETE</div>
+          <h2 id="end-title"></h2>
+          <p id="end-message"></p>
+          <div class="end-score"><span>FINAL WATER ACCESS</span><strong id="final-score"></strong></div><button
+            id="play-again-btn" class="main-button">CONTINUE →</button>
+        </div>
+      </div>
+    </main>
+    <footer><strong>EVERY DROP MATTERS.</strong><span>Student prototype inspired by charity: water. Not affiliated with
+        charity: water.</span></footer>
+  </div>
+  <div id="confetti-container"></div>
+</body>
+
+</html>
